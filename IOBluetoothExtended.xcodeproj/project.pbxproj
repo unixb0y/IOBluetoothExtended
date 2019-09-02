@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C3047E2231D7CAE0003E282 /* Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3047E1231D7CAE0003E282 /* Commands.m */; };
+		8C3047EA231DCDE30003E282 /* HCIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3047E9231DCDE30003E282 /* HCIDelegate.swift */; };
 		8C31742A22D1049E004B9604 /* IOBluetoothExtended.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C31742022D1049D004B9604 /* IOBluetoothExtended.framework */; };
 		8C31742F22D1049E004B9604 /* IOBluetoothExtendedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C31742E22D1049E004B9604 /* IOBluetoothExtendedTests.m */; };
 		8C31743122D1049E004B9604 /* IOBluetoothExtended.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31742322D1049D004B9604 /* IOBluetoothExtended.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C3174AF22D10E11004B9604 /* Commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31743A22D104DA004B9604 /* Commands.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C3174B022D10E2F004B9604 /* Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C31743B22D104E7004B9604 /* Commands.m */; };
 		8C3174B122D10E4C004B9604 /* IOBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31744122D10516004B9604 /* IOBluetoothHostController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8C3047E1231D7CAE0003E282 /* Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Commands.m; sourceTree = "<group>"; };
+		8C3047E9231DCDE30003E282 /* HCIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCIDelegate.swift; sourceTree = "<group>"; };
 		8C31742022D1049D004B9604 /* IOBluetoothExtended.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IOBluetoothExtended.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C31742322D1049D004B9604 /* IOBluetoothExtended.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOBluetoothExtended.h; sourceTree = "<group>"; };
 		8C31742422D1049D004B9604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -33,7 +36,6 @@
 		8C31742E22D1049E004B9604 /* IOBluetoothExtendedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOBluetoothExtendedTests.m; sourceTree = "<group>"; };
 		8C31743022D1049E004B9604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C31743A22D104DA004B9604 /* Commands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Commands.h; sourceTree = "<group>"; };
-		8C31743B22D104E7004B9604 /* Commands.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Commands.m; sourceTree = "<group>"; };
 		8C31743D22D1050A004B9604 /* NSString+DataFromString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DataFromString.m"; sourceTree = "<group>"; };
 		8C31743E22D1050A004B9604 /* NSString+DataFromString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DataFromString.h"; sourceTree = "<group>"; };
 		8C31744122D10516004B9604 /* IOBluetoothHostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOBluetoothHostController.h; sourceTree = "<group>"; };
@@ -82,7 +84,8 @@
 				8C31742322D1049D004B9604 /* IOBluetoothExtended.h */,
 				8C31744122D10516004B9604 /* IOBluetoothHostController.h */,
 				8C31743A22D104DA004B9604 /* Commands.h */,
-				8C31743B22D104E7004B9604 /* Commands.m */,
+				8C3047E1231D7CAE0003E282 /* Commands.m */,
+				8C3047E9231DCDE30003E282 /* HCIDelegate.swift */,
 				8C31743E22D1050A004B9604 /* NSString+DataFromString.h */,
 				8C31743D22D1050A004B9604 /* NSString+DataFromString.m */,
 				8C31742422D1049D004B9604 /* Info.plist */,
@@ -162,6 +165,7 @@
 				TargetAttributes = {
 					8C31741F22D1049D004B9604 = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1030;
 					};
 					8C31742822D1049E004B9604 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -208,7 +212,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C3174B022D10E2F004B9604 /* Commands.m in Sources */,
+				8C3047E2231D7CAE0003E282 /* Commands.m in Sources */,
+				8C3047EA231DCDE30003E282 /* HCIDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +356,7 @@
 		8C31743522D1049E004B9604 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -370,12 +376,17 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.davidetoldo.IOBluetoothExtended;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "IOBluetoothExtended-Swift.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		8C31743622D1049E004B9604 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -395,12 +406,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.davidetoldo.IOBluetoothExtended;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "IOBluetoothExtended-Swift.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
 		8C31743822D1049E004B9604 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = M66VH9B6C7;
@@ -418,6 +433,7 @@
 		8C31743922D1049E004B9604 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = M66VH9B6C7;
