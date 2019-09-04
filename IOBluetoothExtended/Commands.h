@@ -16,7 +16,11 @@
 @interface HCIDelegate: NSObject
 
 @property (nonatomic, assign) unsigned short waitingFor;
+@property (nonatomic, assign) NSString *hostname;
+@property (nonatomic, assign) NSString *port;
 + (void) setWaitingFor:(unsigned short)arg1;
++ (void) setHostname:(NSString *)arg1;
++ (void) setPort:(NSString *)arg1;
 
 @end
 

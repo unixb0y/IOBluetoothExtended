@@ -188,5 +188,13 @@
 + (void) setWaitingFor:(unsigned short)arg1 {
     self.waitingFor = arg1;
 }
+    
++ (void) setHostname:(NSString *)hostname {
+    self.hostname = hostname;
+}
+    
++ (void) setPort:(NSString *)port {
+    self.port = port;
+}
 
 @end
