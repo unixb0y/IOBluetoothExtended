@@ -14,6 +14,7 @@
 		8C31743122D1049E004B9604 /* IOBluetoothExtended.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31742322D1049D004B9604 /* IOBluetoothExtended.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C3174AF22D10E11004B9604 /* Commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31743A22D104DA004B9604 /* Commands.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C3174B122D10E4C004B9604 /* IOBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31744122D10516004B9604 /* IOBluetoothHostController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CE61E5D232AE8D20086419F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE61E5C232AE8D20086419F /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		8C31743D22D1050A004B9604 /* NSString+DataFromString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DataFromString.m"; sourceTree = "<group>"; };
 		8C31743E22D1050A004B9604 /* NSString+DataFromString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DataFromString.h"; sourceTree = "<group>"; };
 		8C31744122D10516004B9604 /* IOBluetoothHostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOBluetoothHostController.h; sourceTree = "<group>"; };
+		8CE61E5C232AE8D20086419F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 				8C31743A22D104DA004B9604 /* Commands.h */,
 				8C3047E1231D7CAE0003E282 /* Commands.m */,
 				8C3047E9231DCDE30003E282 /* HCIDelegate.swift */,
+				8CE61E5C232AE8D20086419F /* Extensions.swift */,
 				8C31743E22D1050A004B9604 /* NSString+DataFromString.h */,
 				8C31743D22D1050A004B9604 /* NSString+DataFromString.m */,
 				8C31742422D1049D004B9604 /* Info.plist */,
@@ -212,6 +215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CE61E5D232AE8D20086419F /* Extensions.swift in Sources */,
 				8C3047E2231D7CAE0003E282 /* Commands.m in Sources */,
 				8C3047EA231DCDE30003E282 /* HCIDelegate.swift in Sources */,
 			);

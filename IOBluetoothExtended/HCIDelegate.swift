@@ -10,6 +10,92 @@ import Foundation
 import Network
 
 extension HCIDelegate: IOBluetoothHostControllerDelegate {
+    @objc public func initServer() {
+        print("IOBE: Initializing")
+        
+        DispatchQueue.global(qos: .background).async {
+            self.startupServer()
+        }
+    }
+
+    public func sendOverTCP(data: Data, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
+        // Transmited message:
+//        print("sending \(data as NSData)")
+        let connection = NWConnection(host: hostUDP, port: portUDP, using: .tcp)
+        connection.stateUpdateHandler = { (newState) in
+            switch (newState) {
+            case .ready:
+                connection.send(content: data, completion: NWConnection.SendCompletion.contentProcessed(({ (NWError) in
+                    if (NWError != nil) {
+                        print("ERROR! Error when data (Type: Data) sending. NWError: \n \(NWError!)")
+                    }
+
+                    //                close(sock_fd)
+                    //                close(client_fd)
+                    //                CFRunLoopStop(CFRunLoopGetCurrent())
+                    //                exit(EXIT_SUCCESS)
+                })))
+            default: print("")
+            }
+        }
+        connection.start(queue: .global())
+    }
+    
+    private func startupServer() {
+        let h = NWEndpoint.Host(self.hostname as String)
+        let i = NWEndpoint.Port(self.inject as String)
+        let s = NWEndpoint.Port(self.snoop as String)
+
+        let sock_fd = socket(AF_INET, SOCK_STREAM, 0)
+        if sock_fd == -1 {
+            perror("Failure: creating socket")
+            exit(EXIT_FAILURE)
+        }
+
+        var sock_opt_on = Int32(1)
+        setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &sock_opt_on, socklen_t(MemoryLayout.size(ofValue: sock_opt_on)))
+
+        var server_addr = sockaddr_in()
+        let server_addr_size = socklen_t(MemoryLayout.size(ofValue: server_addr))
+        server_addr.sin_len = UInt8(server_addr_size)
+        server_addr.sin_family = sa_family_t(AF_INET) // chooses IPv4
+        server_addr.sin_port = UInt16(i!.rawValue).bigEndian // chooses the port
+
+        let bind_server = withUnsafePointer(to: &server_addr) {
+            Darwin.bind(sock_fd, UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self), server_addr_size)
+        }
+        if bind_server == -1 {
+            perror("Failure: binding port")
+            exit(EXIT_FAILURE)
+        }
+
+        if listen(sock_fd, 5) == -1 {
+            perror("Failure: listening")
+            exit(EXIT_FAILURE)
+        }
+
+        print("IOBE: Listening on", server_addr.sin_port.bigEndian)
+        while true {
+            var client_addr = sockaddr_storage()
+            var client_addr_len = socklen_t(MemoryLayout.size(ofValue: client_addr))
+            let client_fd = withUnsafeMutablePointer(to: &client_addr) {
+                accept(sock_fd, UnsafeMutableRawPointer($0).assumingMemoryBound(to: sockaddr.self), &client_addr_len)
+            }
+            if client_fd == -1 {
+                perror("Failure: accepting connection")
+                exit(EXIT_FAILURE);
+            }
+
+//            let fileHandle = FileHandle(fileDescriptor: client_fd)
+//            let data = fileHandle.readDataToEndOfFile()
+//            print("Command: \(data as NSData)")
+            //  TODO: - Send command to chip here
+
+            let temp = "040E0C01011000066724060f009641".hexadecimal!
+            self.sendOverTCP(data: temp, h, s!)
+        }
+    }
+    
     public func bluetoothHCIEventNotificationMessage(_ controller: IOBluetoothHostController,
         in message: UnsafeMutablePointer<IOBluetoothHCIEventNotificationMessage>) {
         
@@ -28,7 +114,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         result.append(data.hexEncodedString())
         
         let str = result.separate()
-        var str2 = ""
+        var formatted = ""
         for (i, sub) in str.components(separatedBy: " ").enumerated() {
             if i % 8 == 7 {
                 let rowIndex = i/8
@@ -38,23 +124,18 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                     result.endIndex
                 let range = start..<end
                 let row = String(result[range])
-                str2.append(sub + " \(row.toAscii())\n")
+                formatted.append(sub + " \(row.toAscii())\n")
             }
             else {
-                str2.append(sub + " ")
+                formatted.append(sub + " ")
             }
         }
-        
-        self.hostname = "127.0.0.1"
-        self.port = "65432"
-        let hostname = NWEndpoint.Host(self.hostname as String)
-        guard let port = NWEndpoint.Port(self.port as String) else { return }
-        
-        sendOverUDP(message: result, hostname, port)
 
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.post(name: NSNotification.Name(rawValue: "bluetoothHCIEventNotificationMessage"),
-                                object: nil, userInfo: ["message": result, "formatted": str2])
+        let hostname = NWEndpoint.Host(self.hostname as String)
+        guard let port = NWEndpoint.Port(self.snoop as String) else { return }
+
+//        print(formatted)
+        self.sendOverTCP(data: result.hexadecimal!, hostname, port)
     }
     
     public func sendOverUDP(message: String, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
@@ -74,42 +155,5 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             }
         }
         connection.start(queue: .global())
-    }
-}
-
-extension Data {
-    struct HexEncodingOptions: OptionSet {
-        let rawValue: Int
-        static let upperCase = HexEncodingOptions(rawValue: 1 << 0)
-    }
-    
-    func hexEncodedString(options: HexEncodingOptions = []) -> String {
-        let format = options.contains(.upperCase) ? "%02hhX" : "%02hhx"
-        return map { String(format: format, $0) }.joined()
-    }
-}
-
-extension String {
-    func separate(every stride: Int = 4, with separator: Character = " ") -> String {
-        return String(enumerated().map { $0 > 0 && $0 % stride == 0 ? [separator, $1] : [$1]}.joined())
-    }
-    
-    func toAscii() -> String {
-        let pattern = "(0x)?([0-9a-f]{2})"
-        let regex = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
-        let nsString = self as NSString
-        let matches = regex.matches(in: self, options: [], range: NSMakeRange(0, nsString.length))
-        var characters = matches.map {
-            Character(UnicodeScalar(UInt32(nsString.substring(with: $0.range(at: 2)), radix: 16)!)!)
-        }
-        characters = characters.map {
-            if !$0.isASCII { return "." }
-            if $0.asciiValue! < 32 { return "." }
-            if $0.asciiValue! > 130 { return "." }
-            if $0.isNewline { return "." }
-            if $0 == "\0" { return "." }
-            return $0
-        }
-        return String(characters)
     }
 }

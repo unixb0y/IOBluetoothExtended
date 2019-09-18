@@ -7,6 +7,7 @@
 //
 
 #import "Commands.h"
+#import "IOBluetoothExtended/IOBluetoothExtended-Swift.h"
 
 @implementation Commands
 
@@ -185,16 +186,34 @@
 
 @implementation HCIDelegate
 
+- (id) initWith:(NSString *)inject and:(NSString*)snoop {
+    if (self = [super init]) {
+        self.inject = inject;
+        self.snoop = snoop;
+        [self initServer];
+    }
+    return self;
+}
+
 + (void) setWaitingFor:(unsigned short)arg1 {
     self.waitingFor = arg1;
 }
-    
+
 + (void) setHostname:(NSString *)hostname {
     self.hostname = hostname;
 }
-    
-+ (void) setPort:(NSString *)port {
-    self.port = port;
+
++ (void) setInject:(NSString *)port {
+    self.inject = port;
+}
+
++ (void) setSnoop:(NSString *)port {
+    self.snoop = port;
+}
+
+- (void) stop {
+    close(_sock_fd);
+    close(_client_fd);
 }
 
 @end

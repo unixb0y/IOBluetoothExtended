@@ -17,10 +17,18 @@
 
 @property (nonatomic, assign) unsigned short waitingFor;
 @property (nonatomic, assign) NSString *hostname;
-@property (nonatomic, assign) NSString *port;
+@property (nonatomic, assign) NSString *inject;
+@property (nonatomic, assign) NSString *snoop;
+
+@property (nonatomic, assign) int32_t sock_fd;
+@property (nonatomic, assign) int32_t client_fd;
+
 + (void) setWaitingFor:(unsigned short)arg1;
 + (void) setHostname:(NSString *)arg1;
-+ (void) setPort:(NSString *)arg1;
+
++ (void) setInject:(NSString *)arg1;
++ (void) setSnoop:(NSString *)arg1;
+- (void) stop;
 
 @end
 
