@@ -14,6 +14,7 @@
 		8C31743122D1049E004B9604 /* IOBluetoothExtended.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31742322D1049D004B9604 /* IOBluetoothExtended.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C3174AF22D10E11004B9604 /* Commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31743A22D104DA004B9604 /* Commands.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C3174B122D10E4C004B9604 /* IOBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31744122D10516004B9604 /* IOBluetoothHostController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C72A82823339457001A9806 /* IOBE.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C72A82723339457001A9806 /* IOBE.m */; };
 		8CE61E5D232AE8D20086419F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE61E5C232AE8D20086419F /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,9 +38,9 @@
 		8C31742E22D1049E004B9604 /* IOBluetoothExtendedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOBluetoothExtendedTests.m; sourceTree = "<group>"; };
 		8C31743022D1049E004B9604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C31743A22D104DA004B9604 /* Commands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Commands.h; sourceTree = "<group>"; };
-		8C31743D22D1050A004B9604 /* NSString+DataFromString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DataFromString.m"; sourceTree = "<group>"; };
-		8C31743E22D1050A004B9604 /* NSString+DataFromString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DataFromString.h"; sourceTree = "<group>"; };
 		8C31744122D10516004B9604 /* IOBluetoothHostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOBluetoothHostController.h; sourceTree = "<group>"; };
+		8C72A82723339457001A9806 /* IOBE.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOBE.m; sourceTree = "<group>"; };
+		8C72A8322333A100001A9806 /* IOBE.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOBE.h; sourceTree = "<group>"; };
 		8CE61E5C232AE8D20086419F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,14 +84,15 @@
 		8C31742222D1049D004B9604 /* IOBluetoothExtended */ = {
 			isa = PBXGroup;
 			children = (
+				8C72A82B2333949C001A9806 /* Util */,
 				8C31742322D1049D004B9604 /* IOBluetoothExtended.h */,
 				8C31744122D10516004B9604 /* IOBluetoothHostController.h */,
+				8C72A8322333A100001A9806 /* IOBE.h */,
+				8C72A82723339457001A9806 /* IOBE.m */,
 				8C31743A22D104DA004B9604 /* Commands.h */,
 				8C3047E1231D7CAE0003E282 /* Commands.m */,
 				8C3047E9231DCDE30003E282 /* HCIDelegate.swift */,
 				8CE61E5C232AE8D20086419F /* Extensions.swift */,
-				8C31743E22D1050A004B9604 /* NSString+DataFromString.h */,
-				8C31743D22D1050A004B9604 /* NSString+DataFromString.m */,
 				8C31742422D1049D004B9604 /* Info.plist */,
 			);
 			path = IOBluetoothExtended;
@@ -103,6 +105,13 @@
 				8C31743022D1049E004B9604 /* Info.plist */,
 			);
 			path = IOBluetoothExtendedTests;
+			sourceTree = "<group>";
+		};
+		8C72A82B2333949C001A9806 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C72A82823339457001A9806 /* IOBE.m in Sources */,
 				8CE61E5D232AE8D20086419F /* Extensions.swift in Sources */,
 				8C3047E2231D7CAE0003E282 /* Commands.m in Sources */,
 				8C3047EA231DCDE30003E282 /* HCIDelegate.swift in Sources */,
@@ -360,6 +370,7 @@
 		8C31743522D1049E004B9604 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -370,6 +381,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
+				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = IOBluetoothExtended/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -390,6 +402,7 @@
 		8C31743622D1049E004B9604 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -400,6 +413,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
+				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = IOBluetoothExtended/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (

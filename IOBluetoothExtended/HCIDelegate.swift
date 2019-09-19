@@ -19,8 +19,6 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
     }
 
     public func sendOverTCP(data: Data, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
-        // Transmited message:
-//        print("sending \(data as NSData)")
         let connection = NWConnection(host: hostUDP, port: portUDP, using: .tcp)
         connection.stateUpdateHandler = { (newState) in
             switch (newState) {
@@ -29,11 +27,6 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                     if (NWError != nil) {
                         print("ERROR! Error when data (Type: Data) sending. NWError: \n \(NWError!)")
                     }
-
-                    //                close(sock_fd)
-                    //                close(client_fd)
-                    //                CFRunLoopStop(CFRunLoopGetCurrent())
-                    //                exit(EXIT_SUCCESS)
                 })))
             default: print("")
             }
@@ -90,6 +83,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
 //            let data = fileHandle.readDataToEndOfFile()
 //            print("Command: \(data as NSData)")
             //  TODO: - Send command to chip here
+            self.waitingFor = 0xfc4d
 
             let temp = "040E0C01011000066724060f009641".hexadecimal!
             self.sendOverTCP(data: temp, h, s!)

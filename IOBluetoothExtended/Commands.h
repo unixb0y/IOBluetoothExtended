@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <IOBluetooth/IOBluetooth.h>
-#import "IOBluetoothHostController.h"
 
 #ifndef Commands_h
 #define Commands_h
@@ -24,6 +23,8 @@
 @property (nonatomic, assign) int32_t client_fd;
 
 @property (nonatomic, assign) Boolean exit_requested;
+
+- (id) initWith:(NSString *)inject and:(NSString*)snoop;
 
 + (void) setWaitingFor:(unsigned short)arg1;
 + (void) setHostname:(NSString *)arg1;
