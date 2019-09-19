@@ -13,7 +13,6 @@
 #define IOBE_h
 
 @class HCIDelegate;
-@class Commands;
 
 @interface IOBE: NSObject {
     IOBluetoothHostController *controller;

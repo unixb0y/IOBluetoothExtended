@@ -7,7 +7,7 @@
 //
 
 #import "IOBE.h"
-#import "Commands.h"
+#import "HCIDelegate.h"
 
 @implementation IOBE
 

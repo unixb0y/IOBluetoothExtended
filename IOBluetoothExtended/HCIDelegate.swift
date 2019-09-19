@@ -79,11 +79,12 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                 exit(EXIT_FAILURE);
             }
 
-//            let fileHandle = FileHandle(fileDescriptor: client_fd)
-//            let data = fileHandle.readDataToEndOfFile()
-//            print("Command: \(data as NSData)")
+            let fileHandle = FileHandle(fileDescriptor: client_fd)
+            let data = fileHandle.readDataToEndOfFile()
             //  TODO: - Send command to chip here
             self.waitingFor = 0xfc4d
+            var command = Array([UInt8](data).dropLast().dropFirst())
+            HCICommunicator.sendArbitraryCommand4(&command, len: 8)
 
             let temp = "040E0C01011000066724060f009641".hexadecimal!
             self.sendOverTCP(data: temp, h, s!)

@@ -1,5 +1,5 @@
 //
-//  Commands.h
+//  HCIDelegate.h
 //  IOBluetoothExtended
 //
 //  Created by Davide Toldo on 06.07.19.
@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <IOBluetooth/IOBluetooth.h>
 
-#ifndef Commands_h
-#define Commands_h
+#ifndef HCIDelegate_h
+#define HCIDelegate_h
 
 @interface HCIDelegate: NSObject
 
@@ -36,17 +36,4 @@
 
 @end
 
-@interface Commands: NSObject
-
-+ (void) readConnectionAcceptTimeout;
-+ (void) readLocalVersionInformation;
-+ (void) readBDAddr;
-
-+ (void) sendArbitraryCommand:(long long)arg1;
-+ (NSArray *) sendArbitraryCommand4:(uint8_t [])arg1 len:(uint8_t)arg2;
-
-+ (void) setDelegate:(HCIDelegate*)arg1 of:(IOBluetoothHostController*)arg2;
-
-@end
-
-#endif /* Commands_h */
+#endif /* HCIDelegate_h */

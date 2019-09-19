@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8C3047E2231D7CAE0003E282 /* Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3047E1231D7CAE0003E282 /* Commands.m */; };
+		8C3047E2231D7CAE0003E282 /* HCIDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3047E1231D7CAE0003E282 /* HCIDelegate.m */; };
 		8C3047EA231DCDE30003E282 /* HCIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3047E9231DCDE30003E282 /* HCIDelegate.swift */; };
 		8C31742A22D1049E004B9604 /* IOBluetoothExtended.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C31742022D1049D004B9604 /* IOBluetoothExtended.framework */; };
 		8C31742F22D1049E004B9604 /* IOBluetoothExtendedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C31742E22D1049E004B9604 /* IOBluetoothExtendedTests.m */; };
 		8C31743122D1049E004B9604 /* IOBluetoothExtended.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31742322D1049D004B9604 /* IOBluetoothExtended.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8C3174AF22D10E11004B9604 /* Commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31743A22D104DA004B9604 /* Commands.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C3174AF22D10E11004B9604 /* HCIDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31743A22D104DA004B9604 /* HCIDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C3174B122D10E4C004B9604 /* IOBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C31744122D10516004B9604 /* IOBluetoothHostController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C57A7432333A6E100037C3D /* HCICommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C57A7422333A6E100037C3D /* HCICommunicator.m */; };
+		8C57A7442333A7C400037C3D /* HCICommunicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C57A7412333A6D000037C3D /* HCICommunicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C72A82823339457001A9806 /* IOBE.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C72A82723339457001A9806 /* IOBE.m */; };
 		8CE61E5D232AE8D20086419F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE61E5C232AE8D20086419F /* Extensions.swift */; };
 /* End PBXBuildFile section */
@@ -29,7 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8C3047E1231D7CAE0003E282 /* Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Commands.m; sourceTree = "<group>"; };
+		8C3047E1231D7CAE0003E282 /* HCIDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCIDelegate.m; sourceTree = "<group>"; };
 		8C3047E9231DCDE30003E282 /* HCIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCIDelegate.swift; sourceTree = "<group>"; };
 		8C31742022D1049D004B9604 /* IOBluetoothExtended.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IOBluetoothExtended.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C31742322D1049D004B9604 /* IOBluetoothExtended.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOBluetoothExtended.h; sourceTree = "<group>"; };
@@ -37,8 +39,10 @@
 		8C31742922D1049E004B9604 /* IOBluetoothExtendedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IOBluetoothExtendedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C31742E22D1049E004B9604 /* IOBluetoothExtendedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOBluetoothExtendedTests.m; sourceTree = "<group>"; };
 		8C31743022D1049E004B9604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8C31743A22D104DA004B9604 /* Commands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Commands.h; sourceTree = "<group>"; };
+		8C31743A22D104DA004B9604 /* HCIDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HCIDelegate.h; sourceTree = "<group>"; };
 		8C31744122D10516004B9604 /* IOBluetoothHostController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOBluetoothHostController.h; sourceTree = "<group>"; };
+		8C57A7412333A6D000037C3D /* HCICommunicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HCICommunicator.h; sourceTree = "<group>"; };
+		8C57A7422333A6E100037C3D /* HCICommunicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HCICommunicator.m; sourceTree = "<group>"; };
 		8C72A82723339457001A9806 /* IOBE.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOBE.m; sourceTree = "<group>"; };
 		8C72A8322333A100001A9806 /* IOBE.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOBE.h; sourceTree = "<group>"; };
 		8CE61E5C232AE8D20086419F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -89,9 +93,11 @@
 				8C31744122D10516004B9604 /* IOBluetoothHostController.h */,
 				8C72A8322333A100001A9806 /* IOBE.h */,
 				8C72A82723339457001A9806 /* IOBE.m */,
-				8C31743A22D104DA004B9604 /* Commands.h */,
-				8C3047E1231D7CAE0003E282 /* Commands.m */,
+				8C31743A22D104DA004B9604 /* HCIDelegate.h */,
+				8C3047E1231D7CAE0003E282 /* HCIDelegate.m */,
 				8C3047E9231DCDE30003E282 /* HCIDelegate.swift */,
+				8C57A7412333A6D000037C3D /* HCICommunicator.h */,
+				8C57A7422333A6E100037C3D /* HCICommunicator.m */,
 				8CE61E5C232AE8D20086419F /* Extensions.swift */,
 				8C31742422D1049D004B9604 /* Info.plist */,
 			);
@@ -121,7 +127,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C3174AF22D10E11004B9604 /* Commands.h in Headers */,
+				8C57A7442333A7C400037C3D /* HCICommunicator.h in Headers */,
+				8C3174AF22D10E11004B9604 /* HCIDelegate.h in Headers */,
 				8C31743122D1049E004B9604 /* IOBluetoothExtended.h in Headers */,
 				8C3174B122D10E4C004B9604 /* IOBluetoothHostController.h in Headers */,
 			);
@@ -226,7 +233,8 @@
 			files = (
 				8C72A82823339457001A9806 /* IOBE.m in Sources */,
 				8CE61E5D232AE8D20086419F /* Extensions.swift in Sources */,
-				8C3047E2231D7CAE0003E282 /* Commands.m in Sources */,
+				8C57A7432333A6E100037C3D /* HCICommunicator.m in Sources */,
+				8C3047E2231D7CAE0003E282 /* HCIDelegate.m in Sources */,
 				8C3047EA231DCDE30003E282 /* HCIDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
