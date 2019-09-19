@@ -186,10 +186,13 @@
 
 @implementation HCIDelegate
 
+Boolean exit_requested = false;
+
 - (id) initWith:(NSString *)inject and:(NSString*)snoop {
     if (self = [super init]) {
         self.inject = inject;
         self.snoop = snoop;
+        self.hostname = @"127.0.0.1";
         [self initServer];
     }
     return self;
@@ -211,9 +214,8 @@
     self.snoop = port;
 }
 
-- (void) stop {
-    close(_sock_fd);
-    close(_client_fd);
+- (void) shutdown {
+    exit_requested = true;
 }
 
 @end

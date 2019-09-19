@@ -11,7 +11,7 @@ import Network
 
 extension HCIDelegate: IOBluetoothHostControllerDelegate {
     @objc public func initServer() {
-        print("IOBE: Initializing")
+        print("IOBE: Initializing, snoop: \(snoop ?? "-1"), inject: \(inject ?? "-1")")
         
         DispatchQueue.global(qos: .background).async {
             self.startupServer()
@@ -75,7 +75,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         }
 
         print("IOBE: Listening on", server_addr.sin_port.bigEndian)
-        while true {
+        while !self.exit_requested {
             var client_addr = sockaddr_storage()
             var client_addr_len = socklen_t(MemoryLayout.size(ofValue: client_addr))
             let client_fd = withUnsafeMutablePointer(to: &client_addr) {
@@ -94,6 +94,9 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             let temp = "040E0C01011000066724060f009641".hexadecimal!
             self.sendOverTCP(data: temp, h, s!)
         }
+        print("Exiting...")
+        close(sock_fd);
+        close(client_fd);
     }
     
     public func bluetoothHCIEventNotificationMessage(_ controller: IOBluetoothHostController,
@@ -136,24 +139,5 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
 
 //        print(formatted)
         self.sendOverTCP(data: result.hexadecimal!, hostname, port)
-    }
-    
-    public func sendOverUDP(message: String, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
-        // Transmited message:
-        let connection = NWConnection(host: hostUDP, port: portUDP, using: .udp)
-        connection.stateUpdateHandler = { (newState) in
-            switch (newState) {
-            case .ready:
-                let contentToSendUDP = message.data(using: String.Encoding.utf8)
-                connection.send(content: contentToSendUDP, completion: NWConnection.SendCompletion.contentProcessed(({ (NWError) in
-                    if (NWError != nil) {
-                        print("ERROR! Error when data (Type: Data) sending. NWError: \n \(NWError!)")
-                    }
-                    CFRunLoopStop(CFRunLoopGetCurrent())
-                })))
-            default: print("")
-            }
-        }
-        connection.start(queue: .global())
     }
 }

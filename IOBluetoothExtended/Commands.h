@@ -23,12 +23,15 @@
 @property (nonatomic, assign) int32_t sock_fd;
 @property (nonatomic, assign) int32_t client_fd;
 
+@property (nonatomic, assign) Boolean exit_requested;
+
 + (void) setWaitingFor:(unsigned short)arg1;
 + (void) setHostname:(NSString *)arg1;
 
 + (void) setInject:(NSString *)arg1;
 + (void) setSnoop:(NSString *)arg1;
-- (void) stop;
+
+- (void) shutdown;
 
 @end
 
