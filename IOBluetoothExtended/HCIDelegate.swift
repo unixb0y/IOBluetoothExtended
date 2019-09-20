@@ -12,10 +12,7 @@ import Network
 extension HCIDelegate: IOBluetoothHostControllerDelegate {
     @objc public func initServer() {
         print("IOBE: Initializing, snoop: \(snoop ?? "-1"), inject: \(inject ?? "-1")")
-        
-        DispatchQueue.global(qos: .background).async {
-            self.startupServer()
-        }
+        self.startupServer()
     }
 
     public func sendOverTCP(data: Data, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
@@ -35,9 +32,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
     }
     
     private func startupServer() {
-        let h = NWEndpoint.Host(self.hostname as String)
         let i = NWEndpoint.Port(self.inject as String)
-        let s = NWEndpoint.Port(self.snoop as String)
 
         let sock_fd = socket(AF_INET, SOCK_STREAM, 0)
         if sock_fd == -1 {
@@ -68,32 +63,35 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         }
 
         print("IOBE: Listening on", server_addr.sin_port.bigEndian)
-        while !self.exit_requested {
-            var client_addr = sockaddr_storage()
-            var client_addr_len = socklen_t(MemoryLayout.size(ofValue: client_addr))
-            let client_fd = withUnsafeMutablePointer(to: &client_addr) {
-                accept(sock_fd, UnsafeMutableRawPointer($0).assumingMemoryBound(to: sockaddr.self), &client_addr_len)
+        DispatchQueue.global(qos: .background).async {
+            while !self.exit_requested {
+                var client_addr = sockaddr_storage()
+                var client_addr_len = socklen_t(MemoryLayout.size(ofValue: client_addr))
+                
+                self.client_fd = withUnsafeMutablePointer(to: &client_addr) {
+                    accept(sock_fd, UnsafeMutableRawPointer($0).assumingMemoryBound(to: sockaddr.self), &client_addr_len)
+                }
+                if self.client_fd == -1 {
+                    perror("Failure: accepting connection")
+                    exit(EXIT_FAILURE);
+                }
+                
+                let fileHandle = FileHandle(fileDescriptor: self.client_fd)
+                let data = fileHandle.readDataToEndOfFile()
+                var command = Array([UInt8](data).dropLast().dropFirst())
+                
+                var opcode: [UInt8] = Array([UInt8](data)[1...2])
+                self.waitingFor = UInt16(opcode[1]) << 8 + UInt16(opcode[0])
+                
+                HCICommunicator.sendArbitraryCommand4(&command, len: 8)! as NSArray
             }
-            if client_fd == -1 {
-                perror("Failure: accepting connection")
-                exit(EXIT_FAILURE);
-            }
-
-            let fileHandle = FileHandle(fileDescriptor: client_fd)
-            let data = fileHandle.readDataToEndOfFile()
-            //  TODO: - Send command to chip here
-            self.waitingFor = 0xfc4d
-            var command = Array([UInt8](data).dropLast().dropFirst())
-            HCICommunicator.sendArbitraryCommand4(&command, len: 8)
-
-            let temp = "040E0C01011000066724060f009641".hexadecimal!
-            self.sendOverTCP(data: temp, h, s!)
+            print("Exiting...")
+            close(sock_fd);
+            close(self.client_fd);
         }
-        print("Exiting...")
-        close(sock_fd);
-        close(client_fd);
     }
     
+    @objc(BluetoothHCIEventNotificationMessage:inNotificationMessage:)
     public func bluetoothHCIEventNotificationMessage(_ controller: IOBluetoothHostController,
         in message: UnsafeMutablePointer<IOBluetoothHCIEventNotificationMessage>) {
         
@@ -106,7 +104,8 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         let opcod2 = Array(opcod1)
         let opcod3 = "\(opcod2[2])\(opcod2[3])\(opcod2[0])\(opcod2[1])"
         
-        var result = "\(String(format:"%02X", dataInfo._field7))"
+        var result = "04"
+        result.append(String(format:"%02X", dataInfo._field7))
         result.append("\(String(format:"%02X", dataInfo.parameterSize+3))")
         result.append("01\(opcod3)")
         result.append(data.hexEncodedString())
@@ -129,10 +128,17 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             }
         }
 
-        let hostname = NWEndpoint.Host(self.hostname as String)
-        guard let port = NWEndpoint.Port(self.snoop as String) else { return }
-
 //        print(formatted)
-        self.sendOverTCP(data: result.hexadecimal!, hostname, port)
+        let h = NWEndpoint.Host(self.hostname as String)
+        let s = NWEndpoint.Port(self.snoop as String)
+        
+        if opcode == 0x1001 {
+            let temp = "040E0C01011000066724060f009641".hexadecimal!
+            self.sendOverTCP(data: temp, h, s!)
+        }
+        else {
+            let temp = result.hexadecimal!//"040E0C01011000066724060f009641".hexadecimal!
+            self.sendOverTCP(data: temp, h, s!)
+        }
     }
 }

@@ -13,9 +13,13 @@
 
 - (id) initWith:(NSString *)inject and:(NSString*)snoop {
     if (self = [super init]) {
-        self->controller = IOBluetoothHostController.defaultController;
-        self->delegate = [[HCIDelegate alloc] initWith:inject and:snoop];
-        self->controller.delegate = self->delegate;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            self->controller = IOBluetoothHostController.defaultController;
+            self->delegate = [[HCIDelegate alloc] initWith:inject and:snoop];
+            self->controller.delegate = self->delegate;
+            
+            [[NSRunLoop currentRunLoop] run];
+        });
     }
     return self;
 }

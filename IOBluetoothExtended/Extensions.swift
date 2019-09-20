@@ -21,6 +21,11 @@ extension Data {
 }
 
 extension String {
+    init?(_ num: UInt8?) {
+        if let n = num { self = String(n) }
+        else { return nil }
+    }
+    
     func separate(every stride: Int = 4, with separator: Character = " ") -> String {
         return String(enumerated().map { $0 > 0 && $0 % stride == 0 ? [separator, $1] : [$1]}.joined())
     }
