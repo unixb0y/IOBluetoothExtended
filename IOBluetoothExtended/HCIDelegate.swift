@@ -78,12 +78,12 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                 
                 let fileHandle = FileHandle(fileDescriptor: self.client_fd)
                 let data = fileHandle.readDataToEndOfFile()
-                var command = Array([UInt8](data).dropLast().dropFirst())
+                var command = Array([UInt8](data).dropFirst())
                 
-                var opcode: [UInt8] = Array([UInt8](data)[1...2])
+                let opcode: [UInt8] = Array([UInt8](data)[1...2])
                 self.waitingFor = UInt16(opcode[1]) << 8 + UInt16(opcode[0])
                 
-                HCICommunicator.sendArbitraryCommand4(&command, len: 8)! as NSArray
+                HCICommunicator.sendArbitraryCommand4(&command, len: 8)
             }
             print("Exiting...")
             close(sock_fd);
@@ -110,6 +110,26 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         result.append("01\(opcod3)")
         result.append(data.hexEncodedString())
         
+//        printFormatted(result)
+
+        let h = NWEndpoint.Host(self.hostname as String)
+        let s = NWEndpoint.Port(self.snoop as String)
+        
+        if opcode == 0x1001 {
+            var temp = ""
+            for i in [0,1,2,3,4,5,9,8,14,15,12,6,7,10,11] {
+                temp.append(result[i*2])
+                temp.append(result[i*2+1])
+            }
+            self.sendOverTCP(data: temp.hexadecimal!, h, s!)
+        }
+        else {
+            let temp = result.hexadecimal!
+            self.sendOverTCP(data: temp, h, s!)
+        }
+    }
+    
+    func printFormatted(_ result: String) {
         let str = result.separate()
         var formatted = ""
         for (i, sub) in str.components(separatedBy: " ").enumerated() {
@@ -128,17 +148,6 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             }
         }
 
-//        print(formatted)
-        let h = NWEndpoint.Host(self.hostname as String)
-        let s = NWEndpoint.Port(self.snoop as String)
-        
-        if opcode == 0x1001 {
-            let temp = "040E0C01011000066724060f009641".hexadecimal!
-            self.sendOverTCP(data: temp, h, s!)
-        }
-        else {
-            let temp = result.hexadecimal!//"040E0C01011000066724060f009641".hexadecimal!
-            self.sendOverTCP(data: temp, h, s!)
-        }
+        print(formatted)
     }
 }
