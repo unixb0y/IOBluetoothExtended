@@ -16,7 +16,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
     }
 
     public func sendOverTCP(data: Data, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
-        let connection = NWConnection(host: hostUDP, port: portUDP, using: .tcp)
+        let connection = NWConnection(host: hostUDP, port: portUDP, using: .udp)
         connection.stateUpdateHandler = { (newState) in
             switch (newState) {
             case .ready:
@@ -34,7 +34,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
     private func startupServer() {
         let i = NWEndpoint.Port(self.inject as String)
 
-        let sock_fd = socket(AF_INET, SOCK_STREAM, 0)
+        let sock_fd = socket(AF_INET, SOCK_DGRAM, 0)
         if sock_fd == -1 {
             perror("Failure: creating socket")
             exit(EXIT_FAILURE)
@@ -57,37 +57,35 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             exit(EXIT_FAILURE)
         }
 
-        if listen(sock_fd, 5) == -1 {
-            perror("Failure: listening")
-            exit(EXIT_FAILURE)
-        }
-
         print("IOBE: Listening on", server_addr.sin_port.bigEndian)
         DispatchQueue.global(qos: .background).async {
             while !self.exit_requested {
                 var client_addr = sockaddr_storage()
                 var client_addr_len = socklen_t(MemoryLayout.size(ofValue: client_addr))
                 
-                self.client_fd = withUnsafeMutablePointer(to: &client_addr) {
-                    accept(sock_fd, UnsafeMutableRawPointer($0).assumingMemoryBound(to: sockaddr.self), &client_addr_len)
-                }
-                if self.client_fd == -1 {
-                    perror("Failure: accepting connection")
-                    exit(EXIT_FAILURE);
+                var receiveBuffer = [UInt8](repeating: 0, count: 1024)
+                var bytesRead = 0
+                
+                bytesRead = withUnsafeMutablePointer(to: &client_addr) {
+                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                        recvfrom(sock_fd, &receiveBuffer, 1024, 0, $0, &client_addr_len)
+                    }
                 }
                 
-                let fileHandle = FileHandle(fileDescriptor: self.client_fd)
-                let data = fileHandle.readDataToEndOfFile()
-                var command = Array([UInt8](data).dropFirst())
+                if bytesRead == -1 {
+                    perror("Failure: error while reading")
+                    exit(EXIT_FAILURE)
+                }
                 
-                let opcode: [UInt8] = Array([UInt8](data)[1...2])
+                var command = Array([UInt8](receiveBuffer).dropFirst())
+                let opcode: [UInt8] = Array([UInt8](receiveBuffer)[1...2])
                 self.waitingFor = UInt16(opcode[1]) << 8 + UInt16(opcode[0])
                 
                 HCICommunicator.sendArbitraryCommand4(&command, len: 8)
             }
             print("Exiting...")
-            close(sock_fd);
-            close(self.client_fd);
+            close(self.sock_fd)
+            close(self.client_fd)
         }
     }
     
