@@ -34,6 +34,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
     private func startupServer() {
         let i = NWEndpoint.Port(self.inject as String)
 
+        // Create socket
         let sock_fd = socket(AF_INET, SOCK_DGRAM, 0)
         if sock_fd == -1 {
             perror("Failure: creating socket")
@@ -49,6 +50,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         server_addr.sin_family = sa_family_t(AF_INET) // chooses IPv4
         server_addr.sin_port = UInt16(i!.rawValue).bigEndian // chooses the port
 
+        // Bind socket
         let bind_server = withUnsafePointer(to: &server_addr) {
             Darwin.bind(sock_fd, UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self), server_addr_size)
         }
@@ -60,12 +62,14 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         print("IOBE: Listening on", server_addr.sin_port.bigEndian)
         DispatchQueue.global(qos: .background).async {
             while !self.exit_requested {
+                // Prepare for receiving data
                 var client_addr = sockaddr_storage()
                 var client_addr_len = socklen_t(MemoryLayout.size(ofValue: client_addr))
                 
                 var receiveBuffer = [UInt8](repeating: 0, count: 1024)
                 var bytesRead = 0
-                
+
+                // Receive data via syscall
                 bytesRead = withUnsafeMutablePointer(to: &client_addr) {
                     $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
                         recvfrom(sock_fd, &receiveBuffer, 1024, 0, $0, &client_addr_len)
@@ -76,12 +80,17 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                     perror("Failure: error while reading")
                     exit(EXIT_FAILURE)
                 }
-                
-                var command = Array([UInt8](receiveBuffer).dropFirst())
-                let opcode: [UInt8] = Array([UInt8](receiveBuffer)[1...2])
-                self.waitingFor = UInt16(opcode[1]) << 8 + UInt16(opcode[0])
-                
-                HCICommunicator.sendArbitraryCommand4(&command, len: 8)
+
+                // After reading the command, do all further processing on another
+                // Thread to be able to accept new incoming commands from the socket
+                DispatchQueue.global(qos: .background).async {
+                    var command = Array([UInt8](receiveBuffer).dropFirst())
+                    let opcode: [UInt8] = Array([UInt8](receiveBuffer)[1...2])
+                    self.waitingFor = UInt16(opcode[1]) << 8 + UInt16(opcode[0])
+
+                    // Send command to Bluetooth HCI Controller
+                    HCICommunicator.sendArbitraryCommand4(&command, len: 8)
+                }
             }
             print("Exiting...")
             close(self.sock_fd)
