@@ -84,12 +84,13 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                 // After reading the command, do all further processing on another
                 // Thread to be able to accept new incoming commands from the socket
                 DispatchQueue.global(qos: .background).async {
-                    var command = Array([UInt8](receiveBuffer).dropFirst())
-                    let opcode: [UInt8] = Array([UInt8](receiveBuffer)[1...2])
+                    var command = Array([UInt8](receiveBuffer).dropFirst(2))
+                    let opcode: [UInt8] = Array([UInt8](receiveBuffer)[2...3])
+                    let length: UInt8 = receiveBuffer[1]
                     self.waitingFor = UInt16(opcode[1]) << 8 + UInt16(opcode[0])
 
                     // Send command to Bluetooth HCI Controller
-                    HCICommunicator.sendArbitraryCommand4(&command, len: 8)
+                    HCICommunicator.sendArbitraryCommand4(&command, len: length)
                 }
             }
             print("Exiting...")
@@ -128,11 +129,11 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
                 temp.append(result[i*2])
                 temp.append(result[i*2+1])
             }
-            self.sendOverTCP(data: temp.hexadecimal!, h, s!)
+            self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
         else {
             let temp = result.hexadecimal!
-            self.sendOverTCP(data: temp, h, s!)
+            self.sendOverUDP(data: temp, h, s!)
         }
     }
     
