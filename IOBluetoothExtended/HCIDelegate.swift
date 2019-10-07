@@ -105,11 +105,12 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         
         let opcode = message.pointee.dataInfo.opcode
         let data = IOBluetoothHCIEventParameterData(message)
-        if opcode != waitingFor { return }
+        if opcode == 0 { return }
         
         let dataInfo = message.pointee.dataInfo
         let opcod1 = String(format:"%02X", dataInfo.opcode)
-        let opcod2 = Array(opcod1)
+        let opcod2 = Array(repeating: "0", count: 4-opcod1.count) + Array(opcod1)
+        if opcod2.count < 4 { return }
         let opcod3 = "\(opcod2[2])\(opcod2[3])\(opcod2[0])\(opcod2[1])"
         
         var result = "04"
@@ -119,6 +120,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         result.append(data.hexEncodedString())
         
 //        printFormatted(result)
+        if result.count < 8 { return }
 
         let h = NWEndpoint.Host(self.hostname as String)
         let s = NWEndpoint.Port(self.snoop as String)
@@ -131,9 +133,22 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             }
             self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
+        if opcode == 0x0405 {
+            let orig = data.hexEncodedString()
+            var temp = "0403"
+            for i in [8,9,0,1,7,6,5,4,3,2] {
+                temp.append(orig[i*2])
+                temp.append(orig[i*2+1])
+            }
+            if temp.count == 24 {
+                self.sendOverUDP(data: temp.hexadecimal!, h, s!)
+            }
+        }
         else {
             let temp = result.hexadecimal!
-            self.sendOverUDP(data: temp, h, s!)
+            if temp.count >= 8 {
+                self.sendOverUDP(data: temp, h, s!)
+            }
         }
     }
     
