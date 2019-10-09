@@ -133,7 +133,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             }
             self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
-        if opcode == 0x0405 {
+        if opcode == 0x0405 || opcode == 0x0409 {
             let orig = data.hexEncodedString()
             var temp = "0403"
             for i in [8,9,0,1,7,6,5,4,3,2] {
@@ -143,6 +143,11 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             if temp.count == 24 {
                 self.sendOverUDP(data: temp.hexadecimal!, h, s!)
             }
+        }
+        if opcode == 0x0406 {
+            let orig = data.hexEncodedString()
+            let temp = "04050400\(orig)"
+            self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
         else {
             let temp = result.hexadecimal!
