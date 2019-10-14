@@ -15,20 +15,24 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         self.startupServer()
     }
 
-    public func sendOverTCP(data: Data, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
-        let connection = NWConnection(host: hostUDP, port: portUDP, using: .udp)
-        connection.stateUpdateHandler = { (newState) in
-            switch (newState) {
-            case .ready:
-                connection.send(content: data, completion: NWConnection.SendCompletion.contentProcessed(({ (NWError) in
-                    if (NWError != nil) {
-                        print("ERROR! Error when data (Type: Data) sending. NWError: \n \(NWError!)")
-                    }
-                })))
-            default: print("")
-            }
+    public func sendOverUDP(data: Data, _ hostUDP: NWEndpoint.Host, _ portUDP: NWEndpoint.Port) {
+        var server_addr = sockaddr_in()
+        let server_addr_size = socklen_t(MemoryLayout.size(ofValue: server_addr))
+        server_addr.sin_len = UInt8(server_addr_size)
+        server_addr.sin_family = sa_family_t(AF_INET) // chooses IPv4
+        server_addr.sin_port = UInt16(portUDP.rawValue).bigEndian // chooses the port
+
+        let sock_fd = socket(AF_INET, SOCK_DGRAM, 0)
+        if sock_fd == -1 {
+            perror("Failure: creating socket")
+            exit(EXIT_FAILURE)
         }
-        connection.start(queue: .global())
+
+        var bytes = [UInt8](repeating: 0, count: data.count)
+        (data as NSData).getBytes(&bytes, length: bytes.count)
+
+        let addr = UnsafeRawPointer(&server_addr).assumingMemoryBound(to: sockaddr.self)
+        sendto(sock_fd, &bytes, data.count, 0, addr, server_addr_size)
     }
     
     private func startupServer() {
