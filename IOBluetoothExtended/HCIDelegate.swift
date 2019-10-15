@@ -129,6 +129,7 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
         let h = NWEndpoint.Host(self.hostname as String)
         let s = NWEndpoint.Port(self.snoop as String)
         
+        // Version Information
         if opcode == 0x1001 {
             var temp = ""
             for i in [0,1,2,3,4,5,9,8,14,15,12,6,7,10,11] {
@@ -137,19 +138,21 @@ extension HCIDelegate: IOBluetoothHostControllerDelegate {
             }
             self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
-        if opcode == 0x0405 || opcode == 0x0409 {
+        // Connection Complete
+        else if opcode == 0x0405 || opcode == 0x0409 {
             let orig = data.hexEncodedString()
             var temp = "0403"
             for i in [8,9,0,1,7,6,5,4,3,2] {
                 temp.append(orig[i*2])
                 temp.append(orig[i*2+1])
             }
-            if temp.count == 24 {
-                self.sendOverUDP(data: temp.hexadecimal!, h, s!)
-            }
+            if temp.count != 24 { return }
+            self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
-        if opcode == 0x0406 {
+        // Disconnection Complete
+        else if opcode == 0x0406 {
             let orig = data.hexEncodedString()
+            if orig.count == 0 { return }
             let temp = "04050400\(orig)"
             self.sendOverUDP(data: temp.hexadecimal!, h, s!)
         }
